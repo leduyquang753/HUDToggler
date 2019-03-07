@@ -1,0 +1,16 @@
+[
+{
+  "modid": "hudtoggler",
+  "name": "HUD Toggler",
+  "description": "A mod that toggles things in the HUD. Simply like that.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Le Duy Quang"],
+  "credits": "leduyquang753 ground this brain and finally decided to copy the Minecraft source code.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

@@ -54,8 +54,8 @@ import cf.leduyquang753.hudtoggler.gui.CustomOverlay;
 public class Main {
 	public static CustomOverlay overlay;
 	public static List<Setting> settings = null;
-	public static final int version = 14;
-	public static final String versionString = "1.3";
+	public static final int version = 15;
+	public static final String versionString = "1.3.1";
 	public static final double[][] scales = new double[][] {{1,2,3},{0.5,1,1.5},{1d/3d,2d/3d,1}};
 	public static ChatWindow chatWindow;
 	public static TimeCounter timeCounter = new TimeCounter();
@@ -143,7 +143,13 @@ public class Main {
 						new Setting("     Current time", true, 52, makeTooltips()),
 						new Setting("     Faster time updates (x5)", false, 53, makeTooltips("Normally, total game time, session time and current date, time is only updated 2 times a second. Checking this will make them refresh 10 times a second.")),
 						new Setting("     Reset total game time", false, 54, makeTooltips("Resets the total game time to 0.")),
-						new Setting("     Only count time in-game", false, 55, makeTooltips("The total game time and session time will only count when in a world or server."))
+						new Setting("     Only count time in-game", false, 55, makeTooltips("The total game time and session time will only count when in a world or server.")),
+						new SettingWithScale("Armor status", false, 56, makeTooltips("Displays to the right edge the armor pieces the player is wearing.")),
+						new Setting("     Show name", false, 57, makeTooltips("Show the names of the pieces.")),
+						new Setting("     Trim name if too long", false, 58, makeTooltips("If the name of the piece is too long, making your eyes feel not so pleasant, turn this on.")),
+						new Setting("     Show durability", true, 59, makeTooltips("Shows the durability of each piece.")),
+						new Setting("     Show percentage instead", false, 60, makeTooltips("Shows the percentage of the piece's remaining durability instead.")),
+						new Setting("     Show inventory item overlays", false, 61, makeTooltips("Includes the stack size and the mini durability bar."))
 						);
 	}
 

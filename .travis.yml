@@ -3,3 +3,11 @@ install:
 - gradle setupDecompWorkspace
 script:
 - gradle build
+- mv "./build/libs/hudtoggler-${TRAVIS_TAG}.jar" "./HUD Toggler ${TRAVIS_TAG} – Forge 1.8.9.jar"
+deploy:
+  provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
+  file: "./HUD Toggler ${TRAVIS_TAG} – Forge 1.8.9.jar"
+  skip_cleanup: true
+  on:
+    tags: true

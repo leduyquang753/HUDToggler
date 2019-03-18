@@ -1,14 +1,14 @@
 language: java
+cache:
+- ./build/tmp
 install:
 - gradle setupDecompWorkspace
 script:
 - gradle build
-after_success:
-- mv "./build/libs/hudtoggler-${TRAVIS_TAG}.jar" "./HUD Toggler ${TRAVIS_TAG} – Forge 1.8.9.jar"
 deploy:
   provider: releases
   api_key: $GITHUB_OAUTH_TOKEN
-  file: "./HUD Toggler ${TRAVIS_TAG} – Forge 1.8.9.jar"
+  file: "./build/libs/hudtoggler-${TRAVIS_TAG}.jar"
   skip_cleanup: true
   on:
     tags: true

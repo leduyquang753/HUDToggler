@@ -2,6 +2,7 @@ language: java
 cache:
   directories:
   - tmp
+install: true
 script:
 - gradle build
 deploy:

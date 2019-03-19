@@ -1,6 +1,6 @@
 language: java
 cache:
-- ./build/tmp
+- tmp
 install:
 - gradle setupDecompWorkspace
 script:

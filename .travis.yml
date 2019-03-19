@@ -3,9 +3,13 @@ cache:
   directories:
   - tmp
 install:
+- echo "travis_fold:start:setup_environment"
 - gradle setupDecompWorkspace
+- echo "travis_fold:end:setup_environment"
 script:
+- echo "travis_fold:start:build"
 - gradle build
+- echo "travis_fold:end:build"
 deploy:
   provider: releases
   api_key: $GITHUB_OAUTH_TOKEN

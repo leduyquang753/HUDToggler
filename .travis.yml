@@ -2,7 +2,7 @@ language: java
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-- rm -fr ./build/tmp/retromapReplacedMain
+- rm -fr ./build/tmp/retromapReplacedMain/
 - rm -f  ./.gradle/gradle.log
 cache:
   directories:

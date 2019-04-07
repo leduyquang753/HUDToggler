@@ -68,7 +68,7 @@ public class GuiCustomizedChat extends GuiNewChat
 	@Override
 	public void drawChat(int p_146230_1_)
 	{
-		if (mc.gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN)
+		if (mc.gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN && Main.settings.get(Main.drawChat).isEnabled())
 		{
 			int i = getLineCount();
 			boolean flag = false;
@@ -118,7 +118,7 @@ public class GuiCustomizedChat extends GuiNewChat
 							{
 								int i2 = 0;
 								int j2 = -i1 * 9;
-								if (Main.settings.get(24).isEnabled()) {
+								if (Main.settings.get(Main.chatbg).isEnabled() || Main.settings.get(Main.chatBgWhenTyping).isEnabled() && getChatOpen()) {
 									drawRect(i2, j2 - 9, i2 + l + 4, j2, l1 / 2 << 24);
 								}
 								String s = chatline.getChatComponent().getFormattedText();
@@ -381,13 +381,13 @@ public class GuiCustomizedChat extends GuiNewChat
 	@Override
 	public int getChatWidth()
 	{
-		return calculateChatboxWidth(mc.gameSettings.chatWidth);
+		return Main.settings.get(Main.extendChatHoriz).isEnabled() ? new ScaledResolution(mc).getScaledWidth()-10 : calculateChatboxWidth(mc.gameSettings.chatWidth);
 	}
 	
 	@Override
 	public int getChatHeight()
 	{
-		return calculateChatboxHeight(getChatOpen() ? mc.gameSettings.chatHeightFocused : mc.gameSettings.chatHeightUnfocused);
+		return Main.settings.get(Main.extendChatVert).isEnabled() && (!Main.settings.get(Main.extendWhenTyping).isEnabled() || getChatOpen()) ? new ScaledResolution(mc).getScaledHeight()-23 : calculateChatboxHeight(getChatOpen() ? mc.gameSettings.chatHeightFocused : mc.gameSettings.chatHeightUnfocused);
 	}
 	
 	/**

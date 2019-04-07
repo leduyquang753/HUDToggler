@@ -54,13 +54,14 @@ import cf.leduyquang753.hudtoggler.gui.CustomOverlay;
 public class Main {
 	public static CustomOverlay overlay;
 	public static List<Setting> settings = null;
-	public static final int version = 15;
-	public static final String versionString = "1.3.1";
+	public static final int version = 16;
+	public static final String versionString = "1.4-RC1";
 	public static final double[][] scales = new double[][] {{1,2,3},{0.5,1,1.5},{1d/3d,2d/3d,1}};
 	public static ChatWindow chatWindow;
 	public static TimeCounter timeCounter = new TimeCounter();
-	public static final int fastUpdate = 53, resetSetting = 54, onlyInGame = 55;
-
+	public static final int drawChat = 24, chatbg = 25, chatBgWhenTyping = 26, extendChatVert = 27, extendWhenTyping = 28,
+			extendChatHoriz = 29, externalChat = 30, fastUpdate = 59, resetSetting = 60, onlyInGame = 61;
+	
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		timeCounter.initialize(Minecraft.getMinecraft());
@@ -71,13 +72,14 @@ public class Main {
 		MinecraftForge.EVENT_BUS.register(new Events());
 		ClientCommandHandler.instance.registerCommand(new ShowGUI());
 		CustomOverlay.xpFormat.setRoundingMode(RoundingMode.DOWN);
-
+		Events.registerKeys();
+		
 		// This variable is only used to trigger the CpuWatcher class.
 		@SuppressWarnings("unused")
 		String LOL = CpuWatcher.usage;
 		updateChatWindowStatus();
 	}
-	
+
 	public static ArrayList<String> makeTooltips(String... tooltips) {
 		ArrayList<String> tooltipsOut = new ArrayList<>();
 		for (String tooltip : tooltips) {
@@ -85,74 +87,80 @@ public class Main {
 		}
 		return tooltipsOut;
 	}
-
+	
 	public static void reset() {
 		settings = Arrays
-				.asList(new SettingWithScale("Scoreboard", true, 0, makeTooltips("The information display to the right of the screen.")),
-						new Setting("     Draw background", true, 1, makeTooltips("Draw the gray background under the scoreboard.")),
-						new Setting("     Show score points", true, 2, makeTooltips("Show the points to the right of each line.", "If you only see 15; 14; 13;... then turn this off.")),
-						new Setting("     Convert score time", false, 3, makeTooltips("Convert time in the scoreboard into d:hh:mm:ss.", "Example: 03:27 -> 3:27; 00:16 -> 16\"")),
-						new Setting("     Convert score numbers", false, 4, makeTooltips("Convert numbers in the scoreboard into French format (# ###,###)", "Example: 123,456.78 -> 123 456,78")),
-						new Setting("Title and subtitle", true, 5, makeTooltips("The two big lines of text that appears at the center of the screen.")),
-						new SettingWithScale("Bossbars", true, 6, makeTooltips("The text and the gauge to the top of the screen.", "Originally, this is used to display the health of bosses (Ender Dragon, Wither), but it can be used by the server to display information.")),
-						new Setting("     Show health bar", true, 7, makeTooltips("The gauge of the boss bar.", "If the server only uses this to display text, turn this off.")),
-						new SettingWithScale("Hotbar", true, 8, makeTooltips("The 9-slot bar to the bottom of the screen.")),
-						new SettingWithScale("Health, hunger, air,...", true, 9, makeTooltips("The player's stats.")),
-						new Setting("     Health", true, 10, makeTooltips()),
-						new Setting("     Hunger", true, 11, makeTooltips()),
-						new Setting("     Air", true, 12, makeTooltips()),
-						new Setting("     Armor", true, 13, makeTooltips()),
-						new Setting("     Riding entity's health", true, 14, makeTooltips()),
-						new Setting("Action text", true, 15, makeTooltips("The text that appears above the hotbar.", "Originally, this displays the name of the song when a music disc is played, but the server can utilize it to display information.")),
-						new Setting("Held item tooltip", true, 16, makeTooltips("When you switch to another item, the item's name will appear above the hotbar and below the action text.", "Actually there is the same option in Vanilla Minecraft.")),
-						new Setting("Experience/Jumpbar", true, 17, makeTooltips("The gauge shown just above the hotbar.", "Normally, it displays the player's current level and the progress to the next level. If riding a horse, it displays a gauge to time a high jump.")),
-						new Setting("     Show percentage", false, 18, makeTooltips("Shows how much of a level the player has to progress to the next level.", "Example: If the player is at level 5 and the gauge fills a quarter (25%), then the number above the experience bar will be 5,25 instead of 5.")),
-						new SettingWithScale("Potion effects", true, 19, makeTooltips("Shows to the top-right the active potion effects on the player along with their levels and remaining times.")),
-						new Setting("Show saturation", false, 20, makeTooltips("The current saturation value, displayed as a white text above the hunger bar to show the fullness.")),
-						new Setting("Show time left to breathe underwater", true, 21, makeTooltips("When the player is underwater, a blue number will be displayed above the bubble icons to show how much time the player can spend underwater before taking drowning damage.", "The time displayed accounts for all factors that extend the underwater breathing time: the Respiration enchantment, and Water Breathing potion.")),
-						new Setting("Darken screen when sleeping", true, 22, makeTooltips("When the player lies on the bed, the screen will be slowly darkened.")),
-						new Setting("Low-health vignette warning", false, 23, makeTooltips("When the player's health is at 6 (3 hearts) or below, a breathing red vignette will be displayed to warn you.")),
-						new Setting("Draw chat background", true, 24, makeTooltips()),
-						new Setting("Open external chat window", false, 25, makeTooltips("§cWARNING: Super buggy.", "Opens an external window dedicated for chat.")),
-						new Setting("Compact times", false, 26, makeTooltips("Compact the formatted time.", "Example: 3:00 -> 3', 6h00:00 -> 6h")),
-						new SettingScaleOnly("Crosshair", 27, makeTooltips("The crosshair at the center.")),
-						new Setting("     Show holding item durability", false, 28, makeTooltips("When a damageable item is currently held, its remaining durability will be displayed above/below the crosshair.")),
-						new Setting("     Show durability on top of crosshair", false, 29, makeTooltips()),
-						new Setting("     Show bow arrows left", false, 30, makeTooltips("When a bow is currently held, the number of arrows in the inventory will be displayed.")),
-						new Setting("     Show heath changes", false, 31, makeTooltips("When the player's health changes (healing, taking damage), the amount of health changed will fly from the crosshair upwards.")),
-						new SettingScaleOnly("Tab list", 32, makeTooltips("The player list shown to the top when the Tab key is held.")),
-						new SettingWithScale("Keystrokes", false, 33, makeTooltips("Displays movement and mouse keys' status (pressed or not) to the top-left of the screen.")),
-						new Setting("     Move forward", true, 34, makeTooltips()),
-						new Setting("     Sprint", true, 35, makeTooltips()),
-						new Setting("     Move backward", true, 36, makeTooltips()),
-						new Setting("     Strafe left", true, 37, makeTooltips()),
-						new Setting("     Strafe right", true, 38, makeTooltips()),
-						new Setting("     Left mouse button", true, 39, makeTooltips()),
-						new Setting("     Left mouse CPS", true, 40, makeTooltips()),
-						new Setting("     Right mouse button", true, 41, makeTooltips()),
-						new Setting("     Right mouse CPS", false, 42, makeTooltips()),
-						new Setting("     Jump", false, 43, makeTooltips()),
-						new Setting("     Sneak", false, 44, makeTooltips()),
-						new SettingWithScale("Monitor", false, 45, makeTooltips("A bunch of lines to the bottom-right displaying some informations.")),
-						new Setting("     CPU load", true, 46, makeTooltips("(CPU) Displays the active time of the CPU. The higher, the heavier the tasks it has to handle.")),
-						new Setting("     Memory", true, 47, makeTooltips("(MEM) Displays the percentage of memory Minecraft has used.", "If it is above 90%, there will be a huge chance of lag spikes. Consider allocating more RAM to Minecraft and instaling the MemoryFix mod.")),
-						new Setting("     FPS", true, 48, makeTooltips("(FPS) The number of frames that Minecraft was able to render in the last second.")),
-						new Setting("     Total game time", true, 49, makeTooltips("(TGT) Total time spent in the game.")),
-						new Setting("     Session game time", true, 50, makeTooltips("(ST) Time spent in the current Minecraft session.")),
-						new Setting("     Current date", true, 51, makeTooltips()),
-						new Setting("     Current time", true, 52, makeTooltips()),
-						new Setting("     Faster time updates (x5)", false, 53, makeTooltips("Normally, total game time, session time and current date, time is only updated 2 times a second. Checking this will make them refresh 10 times a second.")),
-						new Setting("     Reset total game time", false, 54, makeTooltips("Resets the total game time to 0.")),
-						new Setting("     Only count time in-game", false, 55, makeTooltips("The total game time and session time will only count when in a world or server.")),
-						new SettingWithScale("Armor status", false, 56, makeTooltips("Displays to the right edge the armor pieces the player is wearing.")),
-						new Setting("     Show name", false, 57, makeTooltips("Show the names of the pieces.")),
-						new Setting("     Trim name if too long", false, 58, makeTooltips("If the name of the piece is too long, making your eyes feel not so pleasant, turn this on.")),
-						new Setting("     Show durability", true, 59, makeTooltips("Shows the durability of each piece.")),
-						new Setting("     Show percentage instead", false, 60, makeTooltips("Shows the percentage of the piece's remaining durability instead.")),
-						new Setting("     Show inventory item overlays", false, 61, makeTooltips("Includes the stack size and the mini durability bar."))
+				.asList(new SettingWithScale("scoreboard", true, 0),
+						new Setting("scoreboard.drawbg", true, 1),
+						new Setting("scoreboard.showpoints", true, 2),
+						new Setting("scoreboard.converttime", false, 3),
+						new Setting("scoreboard.convertnumbers", false, 4),
+						new Setting("titles", true, 5),
+						new SettingWithScale("bossbars", true, 6),
+						new Setting("bossbars.showhealth", true, 7),
+						new SettingWithScale("hotbar", true, 8),
+						new SettingWithScale("stats", true, 9),
+						new Setting("stats.health", true, 10),
+						new Setting("stats.hunger", true, 11),
+						new Setting("stats.air", true, 12),
+						new Setting("stats.armor", true, 13),
+						new Setting("stats.riding", true, 14),
+						new Setting("action", true, 15),
+						new Setting("helditem", true, 16),
+						new Setting("xpbar", true, 17),
+						new Setting("xpbar.percentage", false, 18),
+						new SettingWithScale("effects", true, 19),
+						new Setting("saturation", false, 20),
+						new Setting("timeunderwater", true, 21),
+						new Setting("darksleep", true, 22),
+						new Setting("lowhpwarn", false, 23),
+						new Setting("chat", true, 24),
+						new Setting("chat.bg", true, 25),
+						new Setting("chat.bgwhentyping", true, 26),
+						new Setting("chat.extendvert", false, 27),
+						new Setting("chat.onlyextendwhentyping", true, 28),
+						new Setting("chat.extendhoriz", false, 29),
+						new Setting("externalchat", false, 30),
+						new Setting("compacttimes", false, 31),
+						new SettingScaleOnly("crosshair", 32),
+						new Setting("crosshair.durability", false, 33),
+						new Setting("crosshair.durontop", false, 34),
+						new Setting("crosshair.arrows", false, 35),
+						new Setting("crosshair.healthchanges", false, 36),
+						new SettingScaleOnly("tablist", 37),
+						new SettingWithScale("keystrokes", false, 38),
+						new Setting("keystrokes.forward", true, 39),
+						new Setting("keystrokes.sprint", true, 40),
+						new Setting("keystrokes.backward", true, 41),
+						new Setting("keystrokes.left", true, 42),
+						new Setting("keystrokes.right", true, 43),
+						new Setting("keystrokes.lmb", true, 44),
+						new Setting("keystrokes.lcps", true, 45),
+						new Setting("keystrokes.rmb", true, 46),
+						new Setting("keystrokes.rcps", false, 47),
+						new Setting("keystrokes.jump", false, 48),
+						new Setting("keystrokes.sneak", false, 49),
+						new SettingWithScale("monitor", false, 50),
+						new Setting("monitor.cpu", true, 51),
+						new Setting("monitor.mem", true, 52),
+						new Setting("monitor.fps", true, 53),
+						new Setting("monitor.ping", true, 54),
+						new Setting("monitor.tgt", true, 55),
+						new Setting("monitor.st", true, 56),
+						new Setting("monitor.date", true, 57),
+						new Setting("monitor.time", true, 58),
+						new Setting("monitor.fastupdates", false, 59),
+						new Setting("monitor.reset", false, 60),
+						new Setting("monitor.onlycountingame", false, 61),
+						new SettingWithScale("armor", false, 62),
+						new Setting("armor.names", false, 63),
+						new Setting("armor.trim", false, 64),
+						new Setting("armor.dur", true, 65),
+						new Setting("armor.durpercent", false, 66),
+						new Setting("armor.overlays", false, 67)
 						);
 	}
-
+	
 	public static void saveSettings() {
 		if (settings.get(resetSetting).isEnabled()) {
 			settings.get(resetSetting).setEnabled(false);
@@ -181,7 +189,7 @@ public class Main {
 		timeCounter.onlyCountInGame = settings.get(onlyInGame).isEnabled();
 		updateChatWindowStatus();
 	}
-
+	
 	public static void loadSettings() {
 		LogManager.getLogger().info("Loading HUD Toggler's settings...");
 		try {
@@ -215,7 +223,7 @@ public class Main {
 			saveSettings();
 		}
 	}
-	
+
 	public static void loadSettings(Preset p) {
 		File in = p.file;
 		LogManager.getLogger().info("Loading HUD Toggler's settings from file: \"" + in.getName() + "\"...");
@@ -238,7 +246,7 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void deletePreset(Preset p) {
 		File in = p.file;
 		LogManager.getLogger().info("Deleting HUD Toggler preset file: \"" + in.getName() + "\"...");
@@ -248,13 +256,13 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static double getScalingFromValue(int value) {
 		if (value == -1) return 1;
 		else return scales[new ScaledResolution(Minecraft.getMinecraft()).getScaleFactor()-1][value];
 	}
-	
+
 	public static void updateChatWindowStatus() {
-		chatWindow.setVisible(settings.get(25).isEnabled());
+		chatWindow.setVisible(settings.get(externalChat).isEnabled());
 	}
 }

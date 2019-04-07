@@ -34,7 +34,6 @@ IN THE SOFTWARE.
 package cf.leduyquang753.hudtoggler;
 
 import java.io.*;
-import java.util.List;
 
 public class SettingScaleOnly extends Setting {
 	/** The scale of the element.<br>
@@ -44,13 +43,13 @@ public class SettingScaleOnly extends Setting {
 	 */
 	private int scale = -1;
 	
-	public SettingScaleOnly(String name, int id, int scale, List<String> tooltips) {
-		super(name, true, id, tooltips);
+	public SettingScaleOnly(String name, int id, int scale) {
+		super(name, true, id);
 		setScale(scale);
 	}
 	
-	public SettingScaleOnly(String name, int id, List<String> tooltips) {
-		super(name, true, id, tooltips);
+	public SettingScaleOnly(String name, int id) {
+		super(name, true, id);
 	}
 
 	public int getScale() {

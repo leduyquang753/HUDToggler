@@ -52,7 +52,7 @@ public class TimeCounter {
 	private long oldSystemTime = 0;
 	private Minecraft mc;
 	private boolean initialized = false;
-
+	
 	public Thread shutdown = new Thread(new Runnable() {
 		@Override
 		public void run() {
@@ -71,8 +71,8 @@ public class TimeCounter {
 			}
 		}
 	}, "timeCounterShutdown");
-
 	
+
 	private String convertTime(long millis) {
 		long seconds = millis / 1000;
 		long day = seconds / 86400;
@@ -84,7 +84,7 @@ public class TimeCounter {
 				+ (seconds < 60 ? "" : (seconds > 3599 && min < 10 ?  "0" + min : min) + ":")
 				+ (seconds > 59 && sec < 10 ? "0" + sec : sec) + (seconds < 60 ? "\"" : "");
 	}
-	
+
 	public void initialize(Minecraft mc) {
 		this.mc = mc;
 		oldSystemTime = Minecraft.getSystemTime();
@@ -97,7 +97,7 @@ public class TimeCounter {
 		} catch (Exception e) {}
 		initialized = true;
 	}
-	
+
 	public void update() {
 		if (!initialized) return;
 		long currentSystemTime = Minecraft.getSystemTime();

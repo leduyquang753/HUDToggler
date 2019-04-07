@@ -38,6 +38,7 @@ import java.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.*;
 
@@ -50,7 +51,7 @@ public class GuiSettingsList extends GuiListExtended
 	public KeyEntry[] listEntries;
 	private int maxListLabelWidth = 0;
 	private GuiSettings parent;
-
+	
 	public GuiSettingsList(GuiSettings settings, Minecraft mcIn)
 	{
 		super(mcIn, settings.width, settings.height, 20, settings.height - 30, 20);
@@ -67,24 +68,24 @@ public class GuiSettingsList extends GuiListExtended
 			} else {
 				toAdd = new EntryWithCheckbox(setting.getName(), setting.isEnabled(), setting.getId());
 			}
-			toAdd.tooltips = setting.getTooltips();
+			toAdd.tooltips = Arrays.asList(I18n.format("hudtoggler.setting." + setting.getName() + ".desc").split("\\\\n"));
 			listEntries[i++] = toAdd;
 		}
 	}
-	
+
 	public List<String> getTooltip(int mouseX, int mouseY) {
 		int hoveringSlot = getSlotIndexFromScreenCoords(mouseX, mouseY);
 		if (hoveringSlot != -1 && getListEntry(hoveringSlot) instanceof KeyEntry)
 			return ((KeyEntry)getListEntry(hoveringSlot)).tooltips;
 		return new ArrayList<>();
 	}
-
+	
 	@Override
 	protected int getSize()
 	{
 		return listEntries.length;
 	}
-
+	
 	/**
 	 * Gets the IGuiListEntry object for the given index
 	 */
@@ -93,13 +94,13 @@ public class GuiSettingsList extends GuiListExtended
 	{
 		return listEntries[index];
 	}
-
+	
 	@Override
 	protected int getScrollBarX()
 	{
 		return parent.width-6;
 	}
-
+	
 	/**
 	 * Gets the width of the list
 	 */
@@ -108,7 +109,7 @@ public class GuiSettingsList extends GuiListExtended
 	{
 		return 350;
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public class KeyEntry implements GuiListExtended.IGuiListEntry
 	{
@@ -116,24 +117,24 @@ public class GuiSettingsList extends GuiListExtended
 		public int id;
 		public int padding = 0;
 		public List<String> tooltips;
-
+		
 		public KeyEntry(String settingName, int id)
 		{
-			name = settingName;
+			name = I18n.format("hudtoggler.setting." + settingName);
 			this.id = id;
 			padding = name.startsWith("     ") ? 16 : 0;
 		}
-
-		public void reset() {
-			
-		}
 		
+		public void reset() {
+
+		}
+
 		@Override
 		public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected)
 		{
 			mc.fontRendererObj.drawString(name, x - maxListLabelWidth + 20, y + slotHeight / 2 - mc.fontRendererObj.FONT_HEIGHT / 2 + 2, 16777215);
 		}
-
+		
 		/**
 		 * Returns true if the mouse has been pressed on this control.
 		 */
@@ -142,33 +143,33 @@ public class GuiSettingsList extends GuiListExtended
 		{
 			return false;
 		}
-
+		
 		/**
 		 * Fired when the mouse button is released. Arguments: index, x, y, mouseEvent, relativeX, relativeY
 		 */
 		@Override
 		public void mouseReleased(int slotIndex, int x, int y, int mouseEvent, int relativeX, int relativeY)
 		{
-
+			
 		}
-		
+
 		@Override
 		public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_)
 		{
 		}
 	}
-	
+
 	public class EntryWithCheckbox extends KeyEntry {
 		private GuiCheckbox toggle;
 		private boolean checked = false;
-		
+
 		public EntryWithCheckbox(String settingName, boolean enabled, int id)
 		{
 			super(settingName, id);
 			toggle = new GuiCheckbox(0, 0, 0);
 			setEnabled(enabled);
 		}
-		
+
 		@Override
 		public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected)
 		{
@@ -177,7 +178,7 @@ public class GuiSettingsList extends GuiListExtended
 			toggle.yPosition = y;
 			toggle.drawButton(mc, mouseX, mouseY);
 		}
-
+		
 		/**
 		 * Returns true if the mouse has been pressed on this control.
 		 */
@@ -192,7 +193,7 @@ public class GuiSettingsList extends GuiListExtended
 			}
 			return inButton;
 		}
-
+		
 		/**
 		 * Fired when the mouse button is released. Arguments: index, x, y, mouseEvent, relativeX, relativeY
 		 */
@@ -201,25 +202,25 @@ public class GuiSettingsList extends GuiListExtended
 		{
 			toggle.mouseReleased(x, y);
 		}
-		
+
 		@Override
 		public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_)
 		{
 		}
-
+		
 		public boolean isEnabled() {
 			return checked;
 		}
-
+		
 		public void setEnabled(boolean isEnabled) {
 			toggle.setStatus((checked = isEnabled) ? 2 : 0);
 		}
 	}
-	
+
 	public class EntryWithScale extends KeyEntry {
 		public GuiButton b1, b2, b3, def;
 		private int scale = 1;
-		
+
 		public EntryWithScale(String settingName, int id, int scale)
 		{
 			super(settingName, id);
@@ -229,7 +230,7 @@ public class GuiSettingsList extends GuiListExtended
 			def = new GuiButton(503, 0, 0, 20, 20, "");
 			setScale(scale);
 		}
-		
+
 		public void setScale(int scale) {
 			int s = Math.max(-1, Math.min(2, scale));
 			this.scale = s;
@@ -248,7 +249,7 @@ public class GuiSettingsList extends GuiListExtended
 					b1.enabled = false;
 			}
 		}
-		
+
 		@Override
 		public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected)
 		{
@@ -267,7 +268,7 @@ public class GuiSettingsList extends GuiListExtended
 			def.yPosition = y;
 			def.drawButton(mc, mouseX, mouseY);
 		}
-
+		
 		/**
 		 * Returns true if the mouse has been pressed on this control.
 		 */
@@ -294,7 +295,7 @@ public class GuiSettingsList extends GuiListExtended
 			}
 			return inButton;
 		}
-
+		
 		/**
 		 * Fired when the mouse button is released. Arguments: index, x, y, mouseEvent, relativeX, relativeY
 		 */
@@ -306,23 +307,23 @@ public class GuiSettingsList extends GuiListExtended
 			b3.mouseReleased(x, y);
 			def.mouseReleased(x, y);
 		}
-		
+
 		@Override
 		public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_)
 		{
 		}
-		
+
 		public int getScale() {
 			return scale;
 		}
 	}
-
+	
 	public class EntryWithBoth extends KeyEntry {
 		public GuiCheckbox toggle;
 		public GuiButton b1, b2, b3, def;
 		private int scale = 1;
 		private boolean checked = false;
-
+		
 		public EntryWithBoth(String settingName, int id, boolean enabled, int scale) {
 			super(settingName, id);
 			b1 = new GuiButton(500, 0, 0, 20, 20, "");
@@ -333,7 +334,7 @@ public class GuiSettingsList extends GuiListExtended
 			setScale(scale);
 			setEnabled(enabled);
 		}
-		
+
 		public void setScale(int scale) {
 			int s = Math.max(-1, Math.min(2, scale));
 			this.scale = s;
@@ -352,11 +353,11 @@ public class GuiSettingsList extends GuiListExtended
 					b1.enabled = false;
 			}
 		}
-		
+
 		public int getScale() {
 			return scale;
 		}
-		
+
 		@Override
 		public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected)
 		{
@@ -378,7 +379,7 @@ public class GuiSettingsList extends GuiListExtended
 			toggle.yPosition = y;
 			toggle.drawButton(mc, mouseX, mouseY);
 		}
-
+		
 		/**
 		 * Returns true if the mouse has been pressed on this control.
 		 */
@@ -408,7 +409,7 @@ public class GuiSettingsList extends GuiListExtended
 			}
 			return inButton;
 		}
-
+		
 		/**
 		 * Fired when the mouse button is released. Arguments: index, x, y, mouseEvent, relativeX, relativeY
 		 */
@@ -420,16 +421,16 @@ public class GuiSettingsList extends GuiListExtended
 			b3.mouseReleased(x, y);
 			def.mouseReleased(x, y);
 		}
-		
+
 		@Override
 		public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_)
 		{
 		}
-
+		
 		public boolean isEnabled() {
 			return checked;
 		}
-
+		
 		public void setEnabled(boolean isEnabled) {
 			toggle.setStatus((checked = isEnabled) ? 2 : 0);
 		}

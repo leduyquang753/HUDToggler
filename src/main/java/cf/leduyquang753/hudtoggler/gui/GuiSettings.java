@@ -40,6 +40,7 @@ import org.apache.logging.log4j.LogManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.relauncher.*;
@@ -50,7 +51,7 @@ import cf.leduyquang753.hudtoggler.gui.GuiSettingsList.*;
 @SideOnly(Side.CLIENT)
 public class GuiSettings extends GuiScreen
 {
-	private static final String screenTitle = "HUD Settings";
+	private static final String screenTitle = I18n.format("hudtoggler.gui.title");
 	public long time;
 	private GuiSettingsList settingsList;
 	private GuiButton buttonReset;
@@ -79,11 +80,11 @@ public class GuiSettings extends GuiScreen
 		}
 		buttonList.add(showTooltips);
 		int buttonWidth = (width-30) / 5;
-		buttonList.add(new GuiButtonExt(301, 5, height - 25, buttonWidth, 20, "Save preset"));
-		buttonList.add(new GuiButtonExt(302, 10 + buttonWidth, height - 25, buttonWidth, 20, "Load preset"));
-		buttonList.add(buttonReset = new GuiButtonExt(201, 15 + buttonWidth*2, height - 25, buttonWidth, 20, "Defaults"));
-		buttonList.add(new GuiButtonExt(200, 20 + buttonWidth*3, height - 25, buttonWidth, 20, "Done"));
-		buttonList.add(new GuiButtonExt(202, 25 + buttonWidth*4, height-25, buttonWidth, 20, "Cancel"));
+		buttonList.add(new GuiButtonExt(301, 5, height - 25, buttonWidth, 20, I18n.format("hudtoggler.gui.save")));
+		buttonList.add(new GuiButtonExt(302, 10 + buttonWidth, height - 25, buttonWidth, 20, I18n.format("hudtoggler.gui.load")));
+		buttonList.add(buttonReset = new GuiButtonExt(201, 15 + buttonWidth*2, height - 25, buttonWidth, 20, I18n.format("hudtoggler.gui.defaults")));
+		buttonList.add(new GuiButtonExt(200, 20 + buttonWidth*3, height - 25, buttonWidth, 20, I18n.format("hudtoggler.done")));
+		buttonList.add(new GuiButtonExt(202, 25 + buttonWidth*4, height-25, buttonWidth, 20, I18n.format("hudtoggler.cancel")));
 		listLeft = width / 2 + 170;
 	}
 	
@@ -165,20 +166,20 @@ public class GuiSettings extends GuiScreen
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
 	{
 		settingsList.drawScreen(mouseX, mouseY, partialTicks);
-		fontRendererObj.drawStringWithShadow(screenTitle + (modified ? " - Not saved" : ""), 5, 8, 16777215);
+		fontRendererObj.drawStringWithShadow(screenTitle + (modified ? " - " + I18n.format("hudtoggler.gui.notsaved") : ""), 5, 8, 16777215);
 		fontRendererObj.drawStringWithShadow(Main.versionString, width - versionWidth, 8, 16777215);
 		fontRendererObj.drawStringWithShadow("x3", listLeft - 10, 8, 16777215);
 		fontRendererObj.drawStringWithShadow("x2", listLeft - 35, 8, 16777215);
 		fontRendererObj.drawStringWithShadow("x1", listLeft - 60, 8, 16777215);
 		fontRendererObj.drawStringWithShadow("?", listLeft - 85, 8, 16777215);
-		fontRendererObj.drawStringWithShadow("Show tooltips", 170, 8, 0xFFFFFF);
+		fontRendererObj.drawStringWithShadow(I18n.format("hudtoggler.gui.showtooltips"), 170, 8, 0xFFFFFF);
 		buttonReset.drawButton(mc, mouseX, mouseY);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		if (showTooltips.status == 2 && mouseX == oldMouseX && mouseY == oldMouseY) {
 			mouseStaticCount++;
 			if (mouseStaticCount > 29) {
 				List<String> toDisplay = settingsList.getTooltip(mouseX, mouseY);
-				if (!toDisplay.isEmpty()) {
+				if (!toDisplay.isEmpty() && !toDisplay.get(0).equals("")) {
 					this.drawHoveringText(toDisplay, mouseX-10, mouseY+25);
 				}
 			}

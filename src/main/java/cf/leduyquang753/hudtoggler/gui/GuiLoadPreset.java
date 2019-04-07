@@ -38,6 +38,7 @@ import java.util.*;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.*;
 
 import cf.leduyquang753.hudtoggler.*;
@@ -51,6 +52,8 @@ public class GuiLoadPreset extends GuiScreen
 	private GuiLoadPreset.PresetList list;
 	private GuiButton load, delete;
 	public List<Preset> presets;
+	private String
+	pWindowName = I18n.format("hudtoggler.load.name");
 	
 	public GuiLoadPreset(GuiScreen screen)
 	{
@@ -66,10 +69,10 @@ public class GuiLoadPreset extends GuiScreen
 	public void initGui()
 	{
 		int buttonWidth = (width-20)/3;
-		buttonList.add(load = new GuiButton(100, 5, height-25, buttonWidth, 20, "Load preset"));
-		buttonList.add(delete = new GuiButton(101, 10+buttonWidth, height-25, buttonWidth, 20, "Delete preset"));
+		buttonList.add(load = new GuiButton(100, 5, height-25, buttonWidth, 20, I18n.format("hudtoggler.load.load")));
+		buttonList.add(delete = new GuiButton(101, 10+buttonWidth, height-25, buttonWidth, 20, I18n.format("hudtoggler.load.del")));
 		load.enabled = delete.enabled = !presets.isEmpty();
-		buttonList.add(new GuiButton(6, 15+2*buttonWidth, height-25, buttonWidth, 20, "Cancel"));
+		buttonList.add(new GuiButton(6, 15+2*buttonWidth, height-25, buttonWidth, 20, I18n.format("hudtoggler.cancel")));
 		list = new GuiLoadPreset.PresetList(mc, presets);
 		list.registerScrollButtons(7, 8);
 	}
@@ -107,7 +110,7 @@ public class GuiLoadPreset extends GuiScreen
 				case 101:
 					Main.deletePreset(list.presets.get(list.current));
 					refreshPresets();
-					initGui();
+					list = new GuiLoadPreset.PresetList(mc, presets);
 				default:
 					list.actionPerformed(button);
 			}
@@ -121,7 +124,7 @@ public class GuiLoadPreset extends GuiScreen
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
 	{
 		list.drawScreen(mouseX, mouseY, partialTicks);
-		drawCenteredString(fontRendererObj, "Load preset", width / 2, 8, 16777215);
+		drawCenteredString(fontRendererObj, pWindowName, width / 2, 8, 16777215);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 	
@@ -198,7 +201,13 @@ public class GuiLoadPreset extends GuiScreen
 							continue;
 						}
 						reader.close();
-						presets.add(new Preset(f.getName().substring(0, f.getName().length()-4), f));
+						String name = f.getName().substring(0, f.getName().length()-4);
+						switch (name) {
+							case "__quick1__": name = I18n.format("hudtoggler.load.quickpreset", 1); break;
+							case "__quick2__": name = I18n.format("hudtoggler.load.quickpreset", 2); break;
+							case "__quick3__": name = I18n.format("hudtoggler.load.quickpreset", 3); break;
+						}
+						presets.add(new Preset(name, f));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

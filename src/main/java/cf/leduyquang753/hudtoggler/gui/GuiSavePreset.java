@@ -37,22 +37,27 @@ import java.io.IOException;
 
 import org.lwjgl.input.Keyboard;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.relauncher.*;
 
 @SideOnly(Side.CLIENT)
 public class GuiSavePreset extends GuiScreen
 {
 	private final GuiSettings parentScreen;
 	private GuiTextField presetName;
-
+	private String
+	pWindowName = I18n.format("hudtoggler.save.title"),
+	pToFile = I18n.format("hudtoggler.save.tofile"),
+	pPresetName = I18n.format("hudtoggler.save.name"),
+	pToQuickPreset = I18n.format("hudtoggler.save.toquickpreset"),
+	pSave = I18n.format("hudtoggler.save.save"),
+	pDefaultName = I18n.format("hudtoggler.save.defaultname");
+	
 	public GuiSavePreset(GuiSettings parent) {
 		parentScreen = parent;
 	}
-
+	
 	/**
 	 * Called from the main game loop to update the screen.
 	 */
@@ -61,7 +66,7 @@ public class GuiSavePreset extends GuiScreen
 	{
 		presetName.updateCursorCounter();
 	}
-
+	
 	/**
 	 * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
 	 * window resizes, the buttonList is cleared beforehand.
@@ -71,13 +76,16 @@ public class GuiSavePreset extends GuiScreen
 	{
 		Keyboard.enableRepeatEvents(true);
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, width / 2 - 100, height / 4 + 96 + 18, "Save"));
-		buttonList.add(new GuiButton(1, width / 2 - 100, height / 4 + 120 + 18, "Cancel"));
-		presetName = new GuiTextField(0, fontRendererObj, width / 2 - 100, 66, 200, 20);
+		buttonList.add(new GuiButton(0, width-75, 40, 60, 20, pSave));
+		buttonList.add(new GuiButton(101, 150, 75, 20, 20, "1"));
+		buttonList.add(new GuiButton(102, 175, 75, 20, 20, "2"));
+		buttonList.add(new GuiButton(103, 200, 75, 20, 20, "3"));
+		buttonList.add(new GuiButton(1, width/2-50, height - 25, 100, 20, I18n.format("hudtoggler.cancel")));
+		presetName = new GuiTextField(10, fontRendererObj, 70, 41, width-155, 18);
 		presetName.setFocused(true);
-		presetName.setText("Preset");
+		presetName.setText(pDefaultName);
 	}
-
+	
 	/**
 	 * Called when the screen is unloaded. Used to disable keyboard repeat events
 	 */
@@ -86,27 +94,36 @@ public class GuiSavePreset extends GuiScreen
 	{
 		Keyboard.enableRepeatEvents(false);
 	}
-
+	
 	/**
 	 * Called by the controls from the buttonList when activated. (Mouse pressed for buttons)
 	 */
 	@Override
 	protected void actionPerformed(GuiButton button) throws IOException
 	{
-		if (button.enabled)
-		{
-			if (button.id == 1)
-			{
-				mc.displayGuiScreen(parentScreen);
-			}
-			else if (button.id == 0)
-			{
-				parentScreen.savePreset(presetName.getText());
-				mc.displayGuiScreen(parentScreen);
+		if (button.enabled) {
+			switch (button.id) {
+				case 1: mc.displayGuiScreen(parentScreen); break;
+				case 0:
+					parentScreen.savePreset(presetName.getText());
+					mc.displayGuiScreen(parentScreen);
+					break;
+				case 101:
+					parentScreen.savePreset("__quick1__");
+					mc.displayGuiScreen(parentScreen);
+					break;
+				case 102:
+					parentScreen.savePreset("__quick2__");
+					mc.displayGuiScreen(parentScreen);
+					break;
+				case 103:
+					parentScreen.savePreset("__quick3__");
+					mc.displayGuiScreen(parentScreen);
+					break;
 			}
 		}
 	}
-
+	
 	/**
 	 * Fired when a key is typed (except F11 which toggles full screen). This is the equivalent of
 	 * KeyListener.keyTyped(KeyEvent e). Args : character (character on the key), keyCode (lwjgl Keyboard key code)
@@ -115,15 +132,15 @@ public class GuiSavePreset extends GuiScreen
 	protected void keyTyped(char typedChar, int keyCode) throws IOException
 	{
 		presetName.textboxKeyTyped(typedChar, keyCode);
-		
+
 		if (keyCode == 28 || keyCode == 156)
 		{
 			actionPerformed(buttonList.get(0));
 		}
-		
+
 		buttonList.get(0).enabled = presetName.getText().length() > 0;
 	}
-	
+
 	/**
 	 * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
 	 */
@@ -133,7 +150,7 @@ public class GuiSavePreset extends GuiScreen
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		presetName.mouseClicked(mouseX, mouseY, mouseButton);
 	}
-
+	
 	/**
 	 * Draws the screen and all the components in it. Args : mouseX, mouseY, renderPartialTicks
 	 */
@@ -141,10 +158,12 @@ public class GuiSavePreset extends GuiScreen
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
 	{
 		drawBackground(0);
-		drawCenteredString(fontRendererObj, "Save HUD preset", width / 2, 17, 16777215);
-		drawString(fontRendererObj, "Preset name", width / 2 - 100, 53, 10526880);
+		drawCenteredString(fontRendererObj, pWindowName, width / 2, 10, 16777215);
+		drawString(fontRendererObj, pToFile, 15, 30, 16777215);
+		drawString(fontRendererObj, pPresetName, 30, 45, 16777215);
 		presetName.drawTextBox();
-
+		drawString(fontRendererObj, pToQuickPreset, 15, 81, 16777215);
+		
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 }

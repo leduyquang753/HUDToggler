@@ -33,8 +33,6 @@ IN THE SOFTWARE.
 
 package cf.leduyquang753.hudtoggler;
 
-import java.util.List;
-
 public class SettingWithScale extends Setting {
 	/**
 	 * The scale of the element.<br>
@@ -43,20 +41,20 @@ public class SettingWithScale extends Setting {
 	 * 2: x2<br>
 	 */
 	private int scale = -1;
-	
-	public SettingWithScale(String name, boolean enabled, int id, int scale, List<String> tooltips) {
-		super(name, enabled, id, tooltips);
+
+	public SettingWithScale(String name, boolean enabled, int id, int scale) {
+		super(name, enabled, id);
 		setScale(scale);
 	}
-
-	public SettingWithScale(String name, boolean enabled, int id, List<String> tooltips) {
-		super(name, enabled, id, tooltips);
-	}
 	
+	public SettingWithScale(String name, boolean enabled, int id) {
+		super(name, enabled, id);
+	}
+
 	public int getScale() {
 		return scale;
 	}
-	
+
 	public void setScale(int scale) {
 		this.scale = Math.max(-1, Math.min(2, scale));
 	}

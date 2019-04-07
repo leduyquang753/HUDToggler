@@ -55,18 +55,18 @@ public class Events {
 	Minecraft mc = Minecraft.getMinecraft();
 	public static boolean shouldOpenGui = false;
 	public static KeyBinding quick1, quick2, quick3, openSettings;
-	
+
 	public static void registerKeys() {
-		quick1 = new KeyBinding("hudtoggler.key.quickhud1", Keyboard.KEY_P, "HUD Toggler");
-		quick2 = new KeyBinding("hudtoggler.key.quickhud2", Keyboard.KEY_NONE, "HUD Toggler");
-		quick3 = new KeyBinding("hudtoggler.key.quickhud3", Keyboard.KEY_NONE, "HUD Toggler");
-		openSettings = new KeyBinding("hudtoggler.key.opensettings", Keyboard.KEY_NONE, "HUD Toggler");
+		quick1 = new KeyBinding("hudtoggler.key.quickhud1", Keyboard.KEY_NUMPAD1, "HUD Toggler");
+		quick2 = new KeyBinding("hudtoggler.key.quickhud2", Keyboard.KEY_NUMPAD2, "HUD Toggler");
+		quick3 = new KeyBinding("hudtoggler.key.quickhud3", Keyboard.KEY_NUMPAD3, "HUD Toggler");
+		openSettings = new KeyBinding("hudtoggler.key.opensettings", Keyboard.KEY_P, "HUD Toggler");
 		ClientRegistry.registerKeyBinding(quick1);
 		ClientRegistry.registerKeyBinding(quick2);
 		ClientRegistry.registerKeyBinding(quick3);
 		ClientRegistry.registerKeyBinding(openSettings);
 	}
-	
+
 	@SubscribeEvent
 	public void onKeyPress(KeyInputEvent event) {
 		int quickHudId = 0;
@@ -90,7 +90,7 @@ public class Events {
 			shouldOpenGui = true;
 		}
 	}
-	
+
 	private int loadQuickHUD(int id) {
 		File in = new File(Minecraft.getMinecraft().mcDataDir.getAbsolutePath() + "/hudpresets/__quick" + id + "__.hud");
 		LogManager.getLogger().info("Loading HUD Toggler's settings from file: \"" + in.getName() + "\"...");
@@ -117,14 +117,14 @@ public class Events {
 		}
 		return 0;
 	}
-
+	
 	@SubscribeEvent
 	public void onRender(RenderGameOverlayEvent event) {
 		if (!(mc.ingameGUI instanceof CustomOverlay)) {
 			mc.ingameGUI = Main.overlay;
 		}
 	}
-
+	
 	@SubscribeEvent
 	public void onTick(ClientTickEvent event) {
 		if (shouldOpenGui) {
@@ -133,14 +133,14 @@ public class Events {
 		}
 		Main.timeCounter.update();
 	}
-
+	
 	@SubscribeEvent
 	public void onGuiOpen(GuiScreenEvent.InitGuiEvent event) {
 		if (event.gui instanceof GuiOptions) {
 			event.buttonList.add(new GuiButton(2019, event.gui.width-105, event.gui.height-25, 100, 20, I18n.format("hudtoggler.gui.title")));
 		}
 	}
-
+	
 	@SubscribeEvent
 	public void onGuiButton(GuiScreenEvent.ActionPerformedEvent event) {
 		if (event.gui instanceof GuiOptions && event.button.id == 2019) {

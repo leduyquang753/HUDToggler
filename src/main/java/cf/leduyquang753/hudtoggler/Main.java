@@ -55,13 +55,13 @@ public class Main {
 	public static CustomOverlay overlay;
 	public static List<Setting> settings = null;
 	public static final int version = 16;
-	public static final String versionString = "1.4-RC1";
+	public static final String versionString = "1.4";
 	public static final double[][] scales = new double[][] {{1,2,3},{0.5,1,1.5},{1d/3d,2d/3d,1}};
 	public static ChatWindow chatWindow;
 	public static TimeCounter timeCounter = new TimeCounter();
 	public static final int drawChat = 24, chatbg = 25, chatBgWhenTyping = 26, extendChatVert = 27, extendWhenTyping = 28,
 			extendChatHoriz = 29, externalChat = 30, fastUpdate = 59, resetSetting = 60, onlyInGame = 61;
-	
+
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		timeCounter.initialize(Minecraft.getMinecraft());
@@ -73,13 +73,13 @@ public class Main {
 		ClientCommandHandler.instance.registerCommand(new ShowGUI());
 		CustomOverlay.xpFormat.setRoundingMode(RoundingMode.DOWN);
 		Events.registerKeys();
-		
+
 		// This variable is only used to trigger the CpuWatcher class.
 		@SuppressWarnings("unused")
 		String LOL = CpuWatcher.usage;
 		updateChatWindowStatus();
 	}
-
+	
 	public static ArrayList<String> makeTooltips(String... tooltips) {
 		ArrayList<String> tooltipsOut = new ArrayList<>();
 		for (String tooltip : tooltips) {
@@ -87,7 +87,7 @@ public class Main {
 		}
 		return tooltipsOut;
 	}
-	
+
 	public static void reset() {
 		settings = Arrays
 				.asList(new SettingWithScale("scoreboard", true, 0),
@@ -160,7 +160,7 @@ public class Main {
 						new Setting("armor.overlays", false, 67)
 						);
 	}
-	
+
 	public static void saveSettings() {
 		if (settings.get(resetSetting).isEnabled()) {
 			settings.get(resetSetting).setEnabled(false);
@@ -189,7 +189,7 @@ public class Main {
 		timeCounter.onlyCountInGame = settings.get(onlyInGame).isEnabled();
 		updateChatWindowStatus();
 	}
-	
+
 	public static void loadSettings() {
 		LogManager.getLogger().info("Loading HUD Toggler's settings...");
 		try {
@@ -223,7 +223,7 @@ public class Main {
 			saveSettings();
 		}
 	}
-
+	
 	public static void loadSettings(Preset p) {
 		File in = p.file;
 		LogManager.getLogger().info("Loading HUD Toggler's settings from file: \"" + in.getName() + "\"...");
@@ -246,7 +246,7 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public static void deletePreset(Preset p) {
 		File in = p.file;
 		LogManager.getLogger().info("Deleting HUD Toggler preset file: \"" + in.getName() + "\"...");
@@ -256,12 +256,12 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public static double getScalingFromValue(int value) {
 		if (value == -1) return 1;
 		else return scales[new ScaledResolution(Minecraft.getMinecraft()).getScaleFactor()-1][value];
 	}
-
+	
 	public static void updateChatWindowStatus() {
 		chatWindow.setVisible(settings.get(externalChat).isEnabled());
 	}

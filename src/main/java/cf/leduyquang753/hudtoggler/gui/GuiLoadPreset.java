@@ -54,13 +54,13 @@ public class GuiLoadPreset extends GuiScreen
 	public List<Preset> presets;
 	private String
 	pWindowName = I18n.format("hudtoggler.load.name");
-	
+
 	public GuiLoadPreset(GuiScreen screen)
 	{
 		parentScreen = screen;
 		refreshPresets();
 	}
-	
+
 	/**
 	 * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
 	 * window resizes, the buttonList is cleared beforehand.
@@ -76,7 +76,7 @@ public class GuiLoadPreset extends GuiScreen
 		list = new GuiLoadPreset.PresetList(mc, presets);
 		list.registerScrollButtons(7, 8);
 	}
-	
+
 	/**
 	 * Handles mouse input.
 	 */
@@ -86,7 +86,7 @@ public class GuiLoadPreset extends GuiScreen
 		super.handleMouseInput();
 		list.handleMouseInput();
 	}
-	
+
 	/**
 	 * Called by the controls from the buttonList when activated. (Mouse pressed for buttons)
 	 */
@@ -111,12 +111,13 @@ public class GuiLoadPreset extends GuiScreen
 					Main.deletePreset(list.presets.get(list.current));
 					refreshPresets();
 					list = new GuiLoadPreset.PresetList(mc, presets);
+					load.enabled = delete.enabled = !presets.isEmpty();
 				default:
 					list.actionPerformed(button);
 			}
 		}
 	}
-	
+
 	/**
 	 * Draws the screen and all the components in it. Args : mouseX, mouseY, renderPartialTicks
 	 */
@@ -127,25 +128,25 @@ public class GuiLoadPreset extends GuiScreen
 		drawCenteredString(fontRendererObj, pWindowName, width / 2, 8, 16777215);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	class PresetList extends GuiSlot
 	{
 		public List<Preset> presets = new ArrayList<>();
 		public int current = 0;
-		
+
 		public PresetList(Minecraft mcIn, List<Preset> presets)
 		{
 			super(mcIn, GuiLoadPreset.this.width, GuiLoadPreset.this.height, 20, GuiLoadPreset.this.height - 30, 18);
 			this.presets = presets;
 		}
-		
+
 		@Override
 		protected int getSize()
 		{
 			return presets.size();
 		}
-		
+
 		/**
 		 * The element in the slot that was clicked, boolean for whether it was double clicked or not
 		 */
@@ -154,7 +155,7 @@ public class GuiLoadPreset extends GuiScreen
 		{
 			current = slotIndex;
 		}
-		
+
 		/**
 		 * Returns true if the element passed in is currently selected
 		 */
@@ -163,7 +164,7 @@ public class GuiLoadPreset extends GuiScreen
 		{
 			return current == slotIndex;
 		}
-		
+
 		/**
 		 * Return the height of the content being scrolled
 		 */
@@ -172,20 +173,20 @@ public class GuiLoadPreset extends GuiScreen
 		{
 			return getSize() * 18;
 		}
-		
+
 		@Override
 		protected void drawBackground()
 		{
 			drawDefaultBackground();
 		}
-		
+
 		@Override
 		protected void drawSlot(int entryID, int p_180791_2_, int p_180791_3_, int p_180791_4_, int mouseXIn, int mouseYIn)
 		{
 			drawCenteredString(GuiLoadPreset.this.fontRendererObj, presets.get(entryID).name, width / 2, p_180791_3_ + 1, 16777215);
 		}
 	}
-
+	
 	private void refreshPresets() {
 		presets = new ArrayList<>();
 		String path = Minecraft.getMinecraft().mcDataDir.getAbsolutePath() + "/hudpresets";

@@ -20,7 +20,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.4.0.2"
+version = "1.4.0.3"
 group= "cf.leduyquang753" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "hudtoggler"
 sourceCompatibility = "1.8"

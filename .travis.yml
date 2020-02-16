@@ -1,0 +1,22 @@
+language: java
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -fr ./build/tmp/retromapReplacedMain/
+- rm -f  ./.gradle/gradle.log
+cache:
+  directories:
+  - $HOME/.gradle/wrapper
+  - $HOME/.gradle/caches
+  - .gradle
+  - build/tmp
+install: true
+script:
+- gradle build
+deploy:
+  provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
+  file: "./build/libs/hudtoggler-${TRAVIS_TAG}.jar"
+  skip_cleanup: true
+  on:
+    tags: true

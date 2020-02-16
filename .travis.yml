@@ -12,6 +12,7 @@ cache:
   - build/tmp
 install: true
 script:
+- gradle setupDecompWorkspace
 - gradle build
 deploy:
   provider: releases
